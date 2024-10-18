@@ -23,8 +23,8 @@ function Todo() {
                 ...arr, 
                 { text: inputValue, isCompleted: false }
             ]);
-            setInputValue("");
         }
+        setInputValue("");
     }}
 
     function checkedIt(index) {
