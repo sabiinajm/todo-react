@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 function Todo() {
-    const [arr, setArr] = useState([]);
     const [inputValue, setInputValue] = useState("");
+    const [arr, setArr] = useState([]);
+    const [editIndex, setEditIndex] = useState(null)
 
     function addNewInp(e) {
         setInputValue(e.target.value);
@@ -10,27 +11,41 @@ function Todo() {
 
     function addToList() {
         if (inputValue.trim() !== "") {
-            setArr((prevArr) => [
-                ...prevArr,
+            if (editIndex !== null) {
+                setArr((arr) =>
+                    arr.map((item, i) =>
+                        i === editIndex ? { ...item, text: inputValue } : item
+                    )
+                );
+                setEditIndex(null);
+            } else {
+            setArr([
+                ...arr, 
                 { text: inputValue, isCompleted: false }
             ]);
             setInputValue("");
         }
-    }
+    }}
 
     function checkedIt(index) {
-        setArr((prevArr) =>
-            prevArr.map((item, i) =>
+        setArr((arr) =>
+            arr.map((item, i) =>
                 i === index ? { ...item, isCompleted: !item.isCompleted } : item
             )
         );
     }
 
     function delItem(index){
-        setArr((prevArr) =>
-            prevArr.filter((item, i) => i !== index)
+        setArr((arr) =>
+            arr.filter((item, i) => i !== index)
         );
     }
+    function editItem(index) {
+        const itemToEdit = arr[index];
+        setInputValue(itemToEdit.text);
+        setEditIndex(index);
+    }
+    
 
     return (
         <div className="max-w-md mx-auto min-h-[400px] bg-white shadow-lg rounded-lg overflow-hidden mt-16">
@@ -70,7 +85,10 @@ function Todo() {
                                 <label className="ml-3 block text-gray-900">
                                     <span className={`text-lg font-medium ${item.isCompleted ? "line-through" : ""}`}>{item.text}</span>
                                 </label>
+                                <div>
+                                <button onClick={() => editItem(index)} className="text-teal-500 pr-2 hover:underline">edit</button>
                                 <button onClick={() => delItem(index)} className="text-red-600 hover:underline">del</button>
+                                </div>
                             </div>
 
                         </div>
